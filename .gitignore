@@ -1,0 +1,12 @@
+# Docker
+/db_data/
+
+# Symfony
+/purchasing-backend/var/
+/purchasing-backend/vendor/
+/purchasing-backend/.env.local
+/purchasing-backend/.env.local.php
+/purchasing-backend/.env.*.local
+/purchasing-backend/config/secrets/prod/prod.decrypt.private.php
+/purchasing-backend/public/bundles/
+/purchasing-backend/.phpunit.result.cache

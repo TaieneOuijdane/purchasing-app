@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  php:
+    container_name: symfony_app
+    build:
+      context: ./purchasing-backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./purchasing-backend:/app
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: "postgresql://root:pwdPurchasing@db:5432/app?serverVersion=16&charset=utf8"
+
+  db:
+    image: postgres:16-alpine
+    container_name: symfony_db
+    restart: always
+    environment:
+      POSTGRES_DB: app
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: pwdPurchasing
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-d", "app", "-U", "root"]
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+volumes:
+  db_data:
