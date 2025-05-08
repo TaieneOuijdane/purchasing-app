@@ -1,12 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
-import { ToastProvider } from './components/ui/Toast';
 import LoginPage from './pages/auth/LoginPage';
+import AdminUserManagementPage from './pages/admin/AdminUserManagementPage';
 import HomePage from './pages/HomePage';
 import NotFoundPage from './pages/NotFoundPage';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import AdminRoute from './components/auth/AdminRoute';
+import PublicRoute from './components/auth/PublicRoute';
 
 // Créer des pages temporaires pour les routes manquantes
 const TempHomePage = () => <div className="p-8"><h1 className="text-2xl font-bold">Page d'accueil</h1></div>;
@@ -18,11 +19,10 @@ const TempProfilePage = () => <div className="p-8"><h1 className="text-2xl font-
 const App: React.FC = () => {
   return (
     <AuthProvider>
-      <ToastProvider>
         <Router>
           <Routes>
             {/* Public pages */}
-            <Route path="/login" element={<LoginPage />} />
+            <Route path="/login" element={<PublicRoute element={<LoginPage />} />} />
             
             {/* Protected pages */}
             <Route path="/" element={<ProtectedRoute element={<TempHomePage />} />} />
@@ -32,13 +32,13 @@ const App: React.FC = () => {
             
             {/* Admin pages */}
             <Route path="/admin" element={<AdminRoute element={<TempAdminPage />} />} />
+            <Route path="/admin/users" element={<AdminUserManagementPage />} />
             
             {/* Redirections & Page 404 */}
             <Route path="/home" element={<Navigate to="/" replace />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </Router>
-      </ToastProvider>
     </AuthProvider>
   );
 };

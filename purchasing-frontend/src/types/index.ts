@@ -1,12 +1,14 @@
 export interface User {
-    id?: number;
+    id: number;
     email: string;
     roles: string[];
-    password?: string;
     firstName: string;
     lastName: string;
+    createdAt?: string;
+    updatedAt?: string;
+    deletedAt?: string;
     isActive: boolean;
-}
+  }
   
 export interface AuthState {
     user: User | null;

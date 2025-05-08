@@ -22,7 +22,7 @@ const LoginPage: React.FC = () => {
             Connectez-vous à votre compte
           </h2>
           <p className="mt-1 text-center text-sm text-teal-600">
-            Accédez à l'application d'achat
+            Accédez à l'application de gestion
           </p>
         </div>
 

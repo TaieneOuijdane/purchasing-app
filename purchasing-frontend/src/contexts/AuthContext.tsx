@@ -42,7 +42,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setState(prev => ({ ...prev, isLoading: true }));
       try {
         const token = localStorage.getItem('token');
-        
+        console.log(token);
         if (token) {
           // Vérifier si le token est valide et récupérer les données de l'utilisateur
           const userData = await authService.getCurrentUser();
@@ -84,7 +84,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       const response = await authService.login({ email, password });
       localStorage.setItem('token', response.token);
-      
+      console.log('Réponse login:', response);
+
       setState({
         user: response.user,
         isLoading: false,

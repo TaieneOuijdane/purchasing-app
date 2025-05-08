@@ -15,7 +15,7 @@ export const authService = {
   // Get current user data
   async getCurrentUser(): Promise<User> {
     try {
-      const response = await api.get<User>('/users/me');
+      const response = await api.get<User>('/authenticated');
       return response.data;
     } catch (error) {
       throw error;

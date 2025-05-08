@@ -1,3 +1,4 @@
+// src/services/userService.ts
 import api from './api';
 import type { User } from '../types';
 
@@ -19,12 +20,50 @@ export interface UserUpdateData {
   isActive?: boolean;
 }
 
+// Fonction utilitaire pour transformer la réponse de l'API
+const transformApiResponse = (data: any): User[] => {
+  // Si la réponse est au format hydra/API Platform avec "member"
+  if (data && data.member && Array.isArray(data.member)) {
+    return data.member.map((user: any) => ({
+      id: user.id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      roles: user.roles || [],
+      isActive: user.isActive !== undefined ? user.isActive : true,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      deletedAt: user.deletedAt
+    }));
+  }
+  
+  // Si la réponse est déjà un tableau d'utilisateurs
+  if (Array.isArray(data)) {
+    return data.map((user: any) => ({
+      id: user.id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      roles: user.roles || [],
+      isActive: user.isActive !== undefined ? user.isActive : true,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+      deletedAt: user.deletedAt
+    }));
+  }
+  
+  // Si la réponse est d'un format inattendu, retourner un tableau vide
+  console.error('Format de réponse API inattendu:', data);
+  return [];
+};
+
 export const userService = {
   // Get all users (admin only)
   async getUsers(): Promise<User[]> {
     try {
-      const response = await api.get<User[]>('/users');
-      return response.data;
+      const response = await api.get<any>('/users');
+      console.log('Réponse API users:', response.data);
+      return transformApiResponse(response.data);
     } catch (error) {
       throw error;
     }
@@ -53,7 +92,12 @@ export const userService = {
   // Update user (admin or self)
   async updateUser(id: number, userData: UserUpdateData): Promise<User> {
     try {
-      const response = await api.put<User>(`/users/${id}`, userData);
+      // Utiliser PATCH au lieu de PUT
+      const response = await api.patch<User>(`/users/${id}`, userData, {
+        headers: {
+          'Content-Type': 'application/merge-patch+json',  // Format spécial pour PATCH avec API Platform
+        }
+      });
       return response.data;
     } catch (error) {
       throw error;
@@ -61,7 +105,7 @@ export const userService = {
   },
 
   // Delete user (admin only)
-  async deleteUser(id: number): Promise<void> {
+  async deleteUser(id: string): Promise<void> {
     try {
       await api.delete(`/users/${id}`);
     } catch (error) {
@@ -69,3 +113,5 @@ export const userService = {
     }
   }
 };
+
+export default userService;
