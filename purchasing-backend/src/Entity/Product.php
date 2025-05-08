@@ -13,6 +13,8 @@ use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
 use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
 use App\Repository\ProductRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -108,6 +110,17 @@ class Product
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['product:read', 'product:write'])]
     private ?Category $category = null;
+
+    /**
+     * @var Collection<int, ProductOrder>
+     */
+    #[ORM\OneToMany(targetEntity: ProductOrder::class, mappedBy: 'product', orphanRemoval: true)]
+    private Collection $productOrders;
+
+    public function __construct()
+    {
+        $this->productOrders = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -242,6 +255,36 @@ class Product
     public function setCategory(?Category $category): static
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ProductOrder>
+     */
+    public function getProductOrders(): Collection
+    {
+        return $this->productOrders;
+    }
+
+    public function addProductOrder(ProductOrder $productOrder): static
+    {
+        if (!$this->productOrders->contains($productOrder)) {
+            $this->productOrders->add($productOrder);
+            $productOrder->setProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProductOrder(ProductOrder $productOrder): static
+    {
+        if ($this->productOrders->removeElement($productOrder)) {
+            // set the owning side to null (unless already changed)
+            if ($productOrder->getProduct() === $this) {
+                $productOrder->setProduct(null);
+            }
+        }
 
         return $this;
     }
