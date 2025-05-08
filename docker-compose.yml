@@ -38,6 +38,21 @@ services:
     restart: always
     ports:
       - 8080:8080
+      
+  frontend:
+    container_name: react_app
+    build:
+      context: ./purchasing-frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./purchasing-frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    depends_on:
+      - php
 
 volumes:
   db_data:

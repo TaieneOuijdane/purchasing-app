@@ -10,3 +10,10 @@
 /purchasing-backend/config/secrets/prod/prod.decrypt.private.php
 /purchasing-backend/public/bundles/
 /purchasing-backend/.phpunit.result.cache
+
+# React/Node
+/purchasing-frontend/node_modules/
+/purchasing-frontend/dist/
+/purchasing-frontend/build/
+/purchasing-frontend/.env.local
+/purchasing-frontend/npm-debug.log*

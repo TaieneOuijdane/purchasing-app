@@ -25,4 +25,4 @@ RUN curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.alpine.sh' 
 
 # Expose port 8000 and start symfony server
 EXPOSE 8000
-CMD ["symfony", "server:start", "--no-tls", "--port=8000", "--allow-http"]
+CMD ["symfony", "server:start", "--no-tls", "--port=8000", "--allow-all-ip"]
