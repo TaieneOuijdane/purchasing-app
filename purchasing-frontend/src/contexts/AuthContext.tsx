@@ -110,7 +110,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = async (): Promise<void> => {
     try {
       await authService.logout();
-      localStorage.removeItem('token');
       setState({
         user: null,
         isLoading: false,

@@ -25,7 +25,7 @@ const AdminPage: React.FC = () => {
     }
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (id: string) => {
     try {
       await userService.deleteUser(id);
       fetchUsers(); // Recharger les utilisateurs après suppression

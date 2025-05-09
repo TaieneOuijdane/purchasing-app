@@ -24,9 +24,11 @@ export const authService = {
 
   // Logout user
   async logout(): Promise<void> {
-    try {
+    try {    
+      // Suppression du token
       localStorage.removeItem('token');
     } catch (error) {
+      localStorage.removeItem('token');
       throw error;
     }
   },
