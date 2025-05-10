@@ -5,6 +5,7 @@ import Layout from '../../components/layout/Layout';
 import { productService } from '../../services/productService';
 import { orderService } from '../../services/orderService';
 import type { Product, OrderCreationData } from '../../types';
+import { formatPrice } from '../../utils/formatters';
 
 const CreateOrderPage: React.FC = () => {
   const navigate = useNavigate();
@@ -64,13 +65,6 @@ const CreateOrderPage: React.FC = () => {
       }
       return total;
     }, 0);
-  };
-
-  const formatPrice = (price: number) => {
-    return price.toLocaleString('fr-MA', {
-      style: 'currency',
-      currency: 'MAD'
-    });
   };
 
   const onSubmit = async (data: OrderCreationData) => {

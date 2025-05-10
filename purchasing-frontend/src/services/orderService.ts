@@ -1,9 +1,24 @@
 import api from './api';
 import type { Order, OrderCreationData, OrderUpdateData } from '../types';
 
-// Fonction utilitaire pour transformer la réponse de l'API
 const transformApiResponse = (data: any): Order[] => {
   // Si la réponse est au format hydra/API Platform avec "member"
+  if (data && data.member && Array.isArray(data.member)) {
+    return data.member.map((order: any) => ({
+      id: order.id,
+      orderNumber: order.orderNumber || '',
+      orderDate: order.orderDate || new Date().toISOString(),
+      status: order.status || 'pending',
+      totalAmount: order.totalAmount || '0',
+      notes: order.notes || null,
+      productOrders: order.productOrders || [],
+      customer: order.customer || null,
+      isActive: order.isActive !== undefined ? order.isActive : true,
+      createdAt: order.createdAt,
+      updatedAt: order.updatedAt
+    }));
+  }
+  
   if (data && data['hydra:member'] && Array.isArray(data['hydra:member'])) {
     return data['hydra:member'].map((order: any) => ({
       id: order.id,

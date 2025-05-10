@@ -31,4 +31,9 @@ services:
         arguments: []
         tags: []
 
+    App\State\OrderCollectionProvider:
+        arguments:
+            $orderRepository: '@App\Repository\OrderRepository'
+            $security: '@security.helper'
+
 

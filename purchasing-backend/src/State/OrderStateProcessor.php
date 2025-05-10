@@ -1,5 +1,4 @@
 <?php
-// src/State/OrderStateProcessor.php
 
 namespace App\State;
 
@@ -50,12 +49,15 @@ final class OrderStateProcessor implements ProcessorInterface
                         $productOrder->setProduct($product);
                         $productOrder->setQuantity($productOrderData['quantity'] ?? 1);
                         $productOrder->setPurchaseOrder($data);
+                        $productOrder->calculatePrices();
                         
                         $data->addProductOrder($productOrder);
                     }
                 }
             }
         }
+
+        $data->calculateTotalAmount(); 
 
         $this->entityManager->persist($data);
         $this->entityManager->flush();

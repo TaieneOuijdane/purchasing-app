@@ -15,8 +15,8 @@ export interface Order {
   totalAmount: string;
   notes?: string | null;
   isActive: boolean;
-  customer: number | UserReference;
-  productOrders?: ProductOrder[];
+  customer: number | string | UserReference; 
+  productOrders?: string | ProductOrder[]; 
   createdAt?: string;
   updatedAt?: string;
 }

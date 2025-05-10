@@ -31,6 +31,11 @@ const Sidebar: React.FC = () => {
       adminOnly: true
     },
     { 
+      path: '/orders', 
+      label: 'Mes commandes', 
+      icon: 'M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z'
+    },
+    { 
       path: '/products', 
       label: 'Produits', 
       icon: 'M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4' 
@@ -93,7 +98,7 @@ const Sidebar: React.FC = () => {
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
           </svg>
-          <span className="text-sm font-medium">Déconnexion1</span>
+          <span className="text-sm font-medium">Déconnexion</span>
         </button>
       </div>
     </div>

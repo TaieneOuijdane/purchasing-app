@@ -11,14 +11,7 @@ import { categoryService } from '../../services/categoryService';
 import type { ProductCreationData, ProductUpdateData } from '../../services/productService';
 import type { CategoryCreationData, CategoryUpdateData } from '../../services/categoryService';
 import type { Product, Category } from '../../types';
-
-// Fonction pour le prix
-const formatPrice = (price: string): string => {
-  return parseFloat(price).toLocaleString('fr-MA', {
-    style: 'currency',
-    currency: 'MAD'
-  });
-};
+import { formatPrice } from '../../utils/formatters';
 
 type ProductFormValues = {
   name: string;

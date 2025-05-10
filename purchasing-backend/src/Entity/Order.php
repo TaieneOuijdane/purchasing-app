@@ -20,6 +20,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\State\OrderStateProcessor;
+use App\State\OrderCollectionProvider;
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
 #[ORM\Table(name: '`order`')]
@@ -27,8 +28,10 @@ use App\State\OrderStateProcessor;
 #[ApiResource(
     operations: [
         new GetCollection(
+            provider: OrderCollectionProvider::class,
             security: "is_granted('ROLE_USER')",
-            securityMessage: "Seuls les utilisateurs connectés peuvent voir les commandes"
+            securityMessage: "Seuls les utilisateurs connectés peuvent voir les commandes",
+            normalizationContext: ['groups' => ['order:read', 'user:read']] 
         ),
         new Get(
             security: "is_granted('ROLE_ADMIN') or object.getCustomer() == user",
@@ -132,14 +135,12 @@ class Order
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->orderNumber = 'ORD-' . str_pad(mt_rand(1, 9999), 4, '0', STR_PAD_LEFT) . '-' . time();
-        $this->calculateTotalAmount();
     }
 
     #[ORM\PreUpdate]
     public function onPreUpdate(): void
     {
         $this->updatedAt = new \DateTimeImmutable();
-        $this->calculateTotalAmount();
     }
 
     public function getId(): ?int
