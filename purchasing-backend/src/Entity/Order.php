@@ -19,6 +19,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use App\State\OrderStateProcessor;
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
 #[ORM\Table(name: '`order`')]
@@ -35,7 +36,8 @@ use Symfony\Component\Validator\Constraints as Assert;
         ),
         new Post(
             security: "is_granted('ROLE_USER')",
-            securityMessage: "Vous devez etre connecté pour créer une commande"
+            securityMessage: "Vous devez etre connecté pour créer une commande",
+            processor: OrderStateProcessor::class
         ),
         new Put(
             security: "is_granted('ROLE_ADMIN') or (object.getCustomer() == user and object.getStatus() == 'pending')",
@@ -65,7 +67,6 @@ class Order
     private ?int $id = null;
 
     #[ORM\Column(length: 50, unique: true)]
-    #[Assert\NotBlank(message: "Le numéro de commande est obligatoire")]
     #[Groups(['order:read'])]
     private ?string $orderNumber = null;
 
@@ -102,7 +103,6 @@ class Order
     #[ORM\ManyToOne(inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['order:read', 'order:write'])]
-    #[Assert\NotNull(message: "L'utilisateur est obligatoire")]
     private ?User $customer = null;
 
     #[ORM\Column]
@@ -126,7 +126,7 @@ class Order
         $this->totalAmount = "0.00";
         $this->isActive = true;
     }
-
+    
     #[ORM\PrePersist]
     public function onPrePersist(): void
     {

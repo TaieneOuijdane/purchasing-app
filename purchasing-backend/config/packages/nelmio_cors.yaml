@@ -9,8 +9,7 @@ nelmio_cors:
     paths:
         '^/api/':
             origin_regex: true
-            # Spécifiez explicitement tous les domaines de développement
-            allow_origin: ['http://localhost:5173', 'http://localhost:3000', 'http://localhost:8080']
+            allow_origin: ['%env(CORS_ALLOW_ORIGIN)%'] 
             allow_headers: ['Content-Type', 'Authorization']
             allow_methods: ['GET', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE']
             max_age: 3600

@@ -17,6 +17,8 @@ export interface Order {
   isActive: boolean;
   customer: number | UserReference;
   productOrders?: ProductOrder[];
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface ProductOrder {
@@ -25,4 +27,22 @@ export interface ProductOrder {
   unitPrice: string;
   totalPrice: string;
   product: number | Product;
+}
+
+export interface OrderCreationData {
+  productOrders: Array<{
+    product: string; 
+    quantity: number;
+  }>;
+  notes?: string;
+  status?: string;
+}
+
+export interface OrderUpdateData {
+  productOrders?: Array<{
+    product: string;
+    quantity: number;
+  }>;
+  notes?: string;
+  status?: string;
 }

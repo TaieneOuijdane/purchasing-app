@@ -11,9 +11,9 @@ import AdminRoute from './components/auth/AdminRoute';
 import PublicRoute from './components/auth/PublicRoute';
 import RestrictedRoute from './components/auth/RestrictedRoute';
 import RestrictedPage from './pages/auth/RestrictedPage';
+import CreateOrderPage from './pages/order/CreateOrderPage';
 
 // Créer des pages temporaires pour les routes manquantes
-const TempOrdersPage = () => <div className="p-8"><h1 className="text-2xl font-bold">Page des commandes</h1></div>;
 const TempProfilePage = () => <div className="p-8"><h1 className="text-2xl font-bold">Page de profil</h1></div>;
 
 const App: React.FC = () => {
@@ -26,7 +26,7 @@ const App: React.FC = () => {
             
             {/* Protected pages */}
             <Route path="/" element={<ProtectedRoute element={<HomePage />} />} />
-            <Route path="/orders" element={<ProtectedRoute element={<TempOrdersPage />} />} />
+            <Route path="/orders/create" element={<ProtectedRoute element={<CreateOrderPage />} />} />
             <Route path="/profile" element={<ProtectedRoute element={<TempProfilePage />} />} />
             
             {/* Admin pages */}
