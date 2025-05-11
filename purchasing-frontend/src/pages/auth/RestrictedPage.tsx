@@ -9,7 +9,7 @@ const RestrictedPage: React.FC = () => {
         <p className="text-gray-600 mb-8">Vous n'avez pas le droit pour accéder à cette page.</p>
         
         <Link 
-          to="/dashboard" 
+          to="/" 
           className="inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-colors"
         >
           Retour au tableau de bord

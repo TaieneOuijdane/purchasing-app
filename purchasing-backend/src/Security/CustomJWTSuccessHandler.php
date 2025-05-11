@@ -27,7 +27,11 @@ class CustomJWTSuccessHandler implements AuthenticationSuccessHandlerInterface
             'user' => [
                 'id' => $user->getId(),
                 'email' => $user->getEmail(),
+                'firstName' => $user->getFirstName(),
+                'lastName' => $user->getLastName(),
                 'roles' => $user->getRoles(),
+                'createdAt' => $user->getCreatedAt()?->format('c'),
+                'isActive' => $user->isActive(),
             ]
         ]);
     }

@@ -4,10 +4,10 @@ import LoginForm from '../../components/auth/LoginForm';
 import { useAuth } from '../../hooks/useAuth';
 
 const LoginPage: React.FC = () => {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   // Si l'utilisateur est déjà connecté, redirigez-le vers la page d'accueil
-  if (isAuthenticated && !isLoading) {
+  if (isAuthenticated) {
     return <Navigate to="/" replace />;
   }
 

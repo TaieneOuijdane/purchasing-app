@@ -9,42 +9,87 @@ interface AuthState {
   error: string | null;
   isAuthenticated: boolean;
   isAdmin: boolean;
+  isInitialized: boolean;
 }
 
 // Définir l'interface pour le contexte d'authentification
 export interface AuthContextProps extends AuthState {
-  login: (email: string, password: string) => Promise<User>;
+  login: (email: string, password: string, remember: boolean) => Promise<User>;
   logout: () => Promise<void>;
 }
 
-// Créer le contexte avec une valeur par défaut
 export const AuthContext = createContext<AuthContextProps | null>(null);
 
-// Props pour le provider
 interface AuthProviderProps {
   children: ReactNode;
 }
 
 // Provider qui fournira le contexte à toute l'application
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  // État local pour stocker les informations d'authentification
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {  
   const [state, setState] = useState<AuthState>({
     user: null,
-    isLoading: true,
+    isLoading: false,
     error: null,
     isAuthenticated: false,
     isAdmin: false,
+    isInitialized: false,
   });
 
-  // Vérifier si l'utilisateur est déjà connecté
-  useEffect(() => {
+  useEffect(() => {    
     const checkAuthStatus = async () => {
-      setState(prev => ({ ...prev, isLoading: true }));
+      
       try {
         const token = localStorage.getItem('token');
-        console.log(token);
-        if (token) {
-          // Vérifier si le token est valide et récupérer les données de l'utilisateur
+        // Vérifier si le token est valide et récupérer les données de l'utilisateur
+        const tokenExpiry = localStorage.getItem('tokenExpiry');
+        if (!token) {
+          setState({
+            user: null,
+            isLoading: false,
+            error: null,
+            isAuthenticated: false,
+            isAdmin: false,
+            isInitialized: true,
+          });
+          return;
+        }
+        
+        if (tokenExpiry) {
+          const now = new Date();
+          const expiry = new Date(tokenExpiry);
+                  
+          if (now >= expiry) {
+            authService.clearAuthData();
+            setState({
+              user: null,
+              isLoading: false,
+              error: 'Session expirée',
+              isAuthenticated: false,
+              isAdmin: false,
+              isInitialized: true,
+            });
+            return;
+          }
+        }
+        setState(prev => {
+          return { ...prev, isLoading: true };
+        });
+        
+        try {
+          const { valid, expired } = await authService.validateToken();
+
+          if (!valid) {
+            authService.clearAuthData();
+            setState({
+              user: null,
+              isLoading: false,
+              error: expired ? 'Session expirée' : null,
+              isAuthenticated: false,
+              isAdmin: false,
+              isInitialized: true,
+            });
+            return;
+          }
           const userData = await authService.getCurrentUser();
           setState({
             user: userData,
@@ -52,39 +97,44 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             error: null,
             isAuthenticated: true,
             isAdmin: userData.roles.includes('ROLE_ADMIN'),
+            isInitialized: true,
           });
-        } else {
+        } catch (error) {
+          authService.clearAuthData();
           setState({
             user: null,
             isLoading: false,
-            error: null,
+            error: (error as Error).message,
             isAuthenticated: false,
             isAdmin: false,
+            isInitialized: true,
           });
         }
-      } catch (error) {
-        console.error('Erreur lors de la vérification de l\'authentification', error);
-        localStorage.removeItem('token');
-        setState({
-          user: null,
-          isLoading: false,
-          error: (error as Error).message,
-          isAuthenticated: false,
-          isAdmin: false,
-        });
+      } catch (outerError) {
+        console.error('Outer try-catch error:', outerError);
       }
     };
 
-    checkAuthStatus();
+    checkAuthStatus();    
   }, []);
 
-  const login = async (email: string, password: string): Promise<User> => {
+  const login = async (email: string, password: string, remember: boolean = false): Promise<User> => {
     setState(prev => ({ ...prev, isLoading: true, error: null }));
     
     try {
       const response = await authService.login({ email, password });
+      
+      const expirationDate = new Date();
+      
+      if (remember) {
+        expirationDate.setDate(expirationDate.getDate() + 1);
+      } else {
+        expirationDate.setHours(expirationDate.getHours() + 3);
+      }
+    
       localStorage.setItem('token', response.token);
-      console.log('Réponse login:', response);
+      localStorage.setItem('tokenExpiry', expirationDate.toISOString());
+      localStorage.setItem('remember', remember.toString());
 
       setState({
         user: response.user,
@@ -92,6 +142,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         error: null,
         isAuthenticated: true,
         isAdmin: response.user.roles.includes('ROLE_ADMIN'),
+        isInitialized: true,
       });
       
       return response.user;
@@ -116,9 +167,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         error: null,
         isAuthenticated: false,
         isAdmin: false,
+        isInitialized: true,
       });
     } catch (error) {
-      console.error('Erreur lors de la déconnexion', error);
       throw error;
     }
   };

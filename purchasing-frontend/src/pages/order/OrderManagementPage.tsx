@@ -174,7 +174,7 @@ const OrderManagementPage: React.FC = () => {
       console.error("Error fetching orders:", err);
       
       if (err.statusCode === 401) {
-        localStorage.removeItem('token');
+        authService.clearAuthData();
         
         // Redirect to login
         navigate('/login', { 

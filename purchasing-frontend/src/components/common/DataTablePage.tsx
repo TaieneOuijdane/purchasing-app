@@ -32,8 +32,8 @@ const DataTablePage = <T extends {}>({
   onAddClick,
   addButtonLabel
 }: DataTablePageProps<T>) => {
-  const [visibleErrorMessage, setVisibleErrorMessage] = useState<string | null>(errorMessage);
-  const [visibleSuccessMessage, setVisibleSuccessMessage] = useState<string | null>(successMessage);
+  const [visibleErrorMessage, setVisibleErrorMessage] = useState<string | null>(null);
+  const [visibleSuccessMessage, setVisibleSuccessMessage] = useState<string | null>(null);
 
   useEffect(() => {
     setVisibleErrorMessage(errorMessage);

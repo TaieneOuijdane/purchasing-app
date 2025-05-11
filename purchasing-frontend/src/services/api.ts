@@ -1,5 +1,6 @@
 import axios from 'axios';
 import type { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
+import { authService } from './authService';
 
 // Interface for API error
 interface ApiError extends Error {
@@ -18,7 +19,6 @@ const api: AxiosInstance = axios.create({
 
 api.interceptors.request.use(
   (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
-    console.log(localStorage.getItem('token'));
     const token = localStorage.getItem('token');
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -39,7 +39,7 @@ api.interceptors.response.use(
     
     // Handle authentication errors
     if (response && response.status === 401) {
-      localStorage.removeItem('token');
+      authService.clearAuthData();
     }
     
     const errorMessage = 

@@ -26,20 +26,37 @@ export const authService = {
   async logout(): Promise<void> {
     try {    
       // Suppression du token
-      localStorage.removeItem('token');
+      this.clearAuthData();
     } catch (error) {
-      localStorage.removeItem('token');
+      this.clearAuthData();
       throw error;
     }
   },
 
   // Validate token
-  async validateToken(): Promise<{ valid: boolean }> {
+  async validateToken(): Promise<{ valid: boolean; expired?: boolean }> {
     try {
+      const tokenExpiry = localStorage.getItem('tokenExpiry');
+      
+      if (tokenExpiry) {
+        const now = new Date();
+        const expiry = new Date(tokenExpiry);
+        
+        if (now >= expiry) {
+          return { valid: false, expired: true };
+        }
+      }
+      
       await this.getCurrentUser();
       return { valid: true };
     } catch (error) {
-      return { valid: false };
+      return { valid: false, expired: false };
     }
+  },
+
+  clearAuthData: () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('tokenExpiry');
+    localStorage.removeItem('remember');
   }
 };

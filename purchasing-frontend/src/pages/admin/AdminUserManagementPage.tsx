@@ -9,6 +9,7 @@ import DataTablePage from '../../components/common/DataTablePage';
 import EntityForm from '../../components/common/EntityForm';
 import type { FormField } from '../../components/common/EntityForm';
 import Layout from '../../components/layout/Layout';
+import { authService } from '../../services/authService';
 
 // Fonction pour transformer la réponse de l'API
 const transformApiResponse = (data: any): User[] => {
@@ -240,7 +241,7 @@ const AdminUserManagementPage: React.FC = () => {
       // Si erreur d'authentification (401)
       if (err.statusCode === 401) {
         // Clear auth tokens
-        localStorage.removeItem('token');
+        authService.clearAuthData();
         
         // Redirect to login
         navigate('/login', { 

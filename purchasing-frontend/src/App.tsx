@@ -12,9 +12,7 @@ import RestrictedRoute from './components/auth/RestrictedRoute';
 import RestrictedPage from './pages/auth/RestrictedPage';
 import CreateOrderPage from './pages/order/CreateOrderPage';
 import OrderManagementPage from './pages/order/OrderManagementPage';
-
-// Créer des pages temporaires pour les routes manquantes
-const TempProfilePage = () => <div className="p-8"><h1 className="text-2xl font-bold">Page de profil</h1></div>;
+import ProfilPage from './pages/ProfilPage';
 
 const App: React.FC = () => {
   return (
@@ -29,13 +27,12 @@ const App: React.FC = () => {
             <Route path="/orders" element={<ProtectedRoute element={<OrderManagementPage />} />} />
             <Route path="/orders/create" element={<ProtectedRoute element={<CreateOrderPage />} />} />
             <Route path="/products" element={<ProtectedRoute element={<ProductManagementPage />} />} />
-            <Route path="/profile" element={<ProtectedRoute element={<TempProfilePage />} />} />
+            <Route path="/settings" element={<ProtectedRoute element={<ProfilPage />} />} />
             
             {/* Admin pages */}
             <Route path="/admin/users" element={<RestrictedRoute element={<AdminUserManagementPage />} />} />
 
             {/* Redirections & Page 404 */}
-            <Route path="/dashboard" element={<Navigate to="/" replace />} />
             <Route path="/restricted" element={<RestrictedPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>

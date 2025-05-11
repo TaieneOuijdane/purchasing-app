@@ -12,6 +12,7 @@ import type { ProductCreationData, ProductUpdateData } from '../../services/prod
 import type { CategoryCreationData, CategoryUpdateData } from '../../services/categoryService';
 import type { Product, Category } from '../../types';
 import { formatPrice } from '../../utils/formatters';
+import { authService } from '../../services/authService';
 
 type ProductFormValues = {
   name: string;
@@ -277,7 +278,7 @@ const ProductManagementPage: React.FC = () => {
       console.error("Error fetching products:", err);
       
       if (err.statusCode === 401) {
-        localStorage.removeItem('token');
+        authService.clearAuthData();
         navigate('/login', { 
           state: { 
             from: location.pathname,
