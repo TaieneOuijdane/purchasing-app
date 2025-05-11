@@ -204,7 +204,7 @@ const OrderManagementPage: React.FC = () => {
   };
 
   const handleViewDetails = (orderId: number) => {
-    navigate(`/orders/${orderId}`);
+    navigate(`/orders/update/${orderId}`);
   };
 
   const handleDelete = async (orderId: number) => {

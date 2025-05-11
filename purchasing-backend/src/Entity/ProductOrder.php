@@ -55,7 +55,7 @@ class ProductOrder
     public function setQuantity(int $quantity): static
     {
         $this->quantity = $quantity;
-
+        $this->calculatePrices();
         return $this;
     }
 
@@ -91,7 +91,7 @@ class ProductOrder
     public function setPurchaseOrder(?Order $purchaseOrder): static
     {
         $this->purchaseOrder = $purchaseOrder;
-
+        
         return $this;
     }
 
@@ -103,7 +103,7 @@ class ProductOrder
     public function setProduct(?Product $product): static
     {
         $this->product = $product;
-
+        $this->calculatePrices();
         return $this;
     }
 
@@ -111,9 +111,10 @@ class ProductOrder
     #[ORM\PreUpdate]
     public function calculatePrices(): void
     {
-        if ($this->product) {
-            $this->unitPrice = $this->product->getPrice();
-            $this->totalPrice = (string) ((float) $this->unitPrice * $this->quantity);
+        if ($this->product && $this->quantity > 0) {
+            $productPrice = (float) $this->product->getPrice();
+            $this->unitPrice = (string) $productPrice;
+            $this->totalPrice = (string) ($productPrice * $this->quantity);
         }
     }
 }

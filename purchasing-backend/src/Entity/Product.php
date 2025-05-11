@@ -47,7 +47,7 @@ class Product
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['product:read', 'category:read'])]
+    #[Groups(['product:read', 'category:read', 'order:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
@@ -58,7 +58,7 @@ class Product
         minMessage: "Le nom doit contenir au moins {{ limit }} caractères",
         maxMessage: "Le nom ne peut pas dépasser {{ limit }} caractères"
     )]
-    #[Groups(['product:read', 'product:write', 'category:read'])]
+    #[Groups(['product:read', 'category:read', 'order:read'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -68,7 +68,7 @@ class Product
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
     #[Assert\NotBlank(message: "Le prix est obligatoire")]
     #[Assert\Positive(message: "Le prix doit être supérieur à zéro")]
-    #[Groups(['product:read', 'product:write'])]
+    #[Groups(['product:read', 'category:read', 'order:read'])]
     private ?string $price = null;
 
     #[ORM\Column(length: 50)]
@@ -77,17 +77,17 @@ class Product
         pattern: '/^[A-Za-z0-9\-]+$/',
         message: "Le SKU ne peut contenir que des lettres, chiffres et tirets"
     )]
-    #[Groups(['product:read', 'product:write'])]
+    #[Groups(['product:read', 'category:read', 'order:read'])]
     private ?string $sku = null;
 
     #[ORM\Column]
     #[Assert\NotBlank(message: "Le stock est obligatoire")]
     #[Assert\PositiveOrZero(message: "Le stock ne peut pas être négatif")]
-    #[Groups(['product:read', 'product:write'])]
+    #[Groups(['product:read', 'category:read', 'order:read'])]
     private ?int $stock = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['product:read', 'product:write'])]
+    #[Groups(['product:read', 'category:read', 'order:read'])]
     private ?string $image = null;
 
     #[ORM\Column]
@@ -103,7 +103,7 @@ class Product
     private ?\DateTimeImmutable $deletedAt = null;
 
     #[ORM\Column]
-    #[Groups(['product:read', 'product:write'])]
+    #[Groups(['product:read', 'category:read', 'order:read'])]
     private ?bool $isActive = null;
 
     #[ORM\ManyToOne(inversedBy: 'products')]

@@ -1,76 +1,54 @@
 import api from './api';
 import type { Order, OrderCreationData, OrderUpdateData } from '../types';
 
+const transformProductOrders = (productOrders: any) => {
+  if (!productOrders) return [];
+  
+  if (Array.isArray(productOrders)) {
+    return productOrders;
+  }
+  
+  if (typeof productOrders === 'object') {
+    return Object.values(productOrders);
+  }
+  
+  return [];
+};
+
+const transformOrder = (order: any): Order => ({
+  id: order.id,
+  orderNumber: order.orderNumber || '',
+  orderDate: order.orderDate || new Date().toISOString(),
+  status: order.status || 'pending',
+  totalAmount: order.totalAmount || '0',
+  notes: order.notes || null,
+  productOrders: transformProductOrders(order.productOrders),
+  customer: order.customer || null,
+  isActive: order.isActive !== undefined ? order.isActive : true,
+  createdAt: order.createdAt,
+  updatedAt: order.updatedAt
+});
+
 const transformApiResponse = (data: any): Order[] => {
-  // Si la réponse est au format hydra/API Platform avec "member"
   if (data && data.member && Array.isArray(data.member)) {
-    return data.member.map((order: any) => ({
-      id: order.id,
-      orderNumber: order.orderNumber || '',
-      orderDate: order.orderDate || new Date().toISOString(),
-      status: order.status || 'pending',
-      totalAmount: order.totalAmount || '0',
-      notes: order.notes || null,
-      productOrders: order.productOrders || [],
-      customer: order.customer || null,
-      isActive: order.isActive !== undefined ? order.isActive : true,
-      createdAt: order.createdAt,
-      updatedAt: order.updatedAt
-    }));
+    return data.member.map(transformOrder);
   }
   
   if (data && data['hydra:member'] && Array.isArray(data['hydra:member'])) {
-    return data['hydra:member'].map((order: any) => ({
-      id: order.id,
-      orderNumber: order.orderNumber || '',
-      orderDate: order.orderDate || new Date().toISOString(),
-      status: order.status || 'pending',
-      totalAmount: order.totalAmount || '0',
-      notes: order.notes || null,
-      productOrders: order.productOrders || [],
-      customer: order.customer || null,
-      isActive: order.isActive !== undefined ? order.isActive : true,
-      createdAt: order.createdAt,
-      updatedAt: order.updatedAt
-    }));
+    return data['hydra:member'].map(transformOrder);
   }
   
   // Si la réponse est un tableau de commandes
   if (Array.isArray(data)) {
-    return data.map((order: any) => ({
-      id: order.id,
-      orderNumber: order.orderNumber || '',
-      orderDate: order.orderDate || new Date().toISOString(),
-      status: order.status || 'pending',
-      totalAmount: order.totalAmount || '0',
-      notes: order.notes || null,
-      productOrders: order.productOrders || [],
-      customer: order.customer || null,
-      isActive: order.isActive !== undefined ? order.isActive : true,
-      createdAt: order.createdAt,
-      updatedAt: order.updatedAt
-    }));
+    return data.map(transformOrder);
   }
   
   // Si c'est une commande unique
   if (data && data.id) {
-    return [{
-      id: data.id,
-      orderNumber: data.orderNumber || '',
-      orderDate: data.orderDate || new Date().toISOString(),
-      status: data.status || 'pending',
-      totalAmount: data.totalAmount || '0',
-      notes: data.notes || null,
-      productOrders: data.productOrders || [],
-      customer: data.customer || null,
-      isActive: data.isActive !== undefined ? data.isActive : true,
-      createdAt: data.createdAt,
-      updatedAt: data.updatedAt
-    }];
+    return [transformOrder(data)];
   }
   
   // Si la réponse est d'un format inattendu, retourner un tableau vide
-  console.error('Format de réponse API inattendu:', data);
   return [];
 };
 
@@ -89,7 +67,11 @@ export const orderService = {
   async getOrder(id: number): Promise<Order> {
     try {
       const response = await api.get<any>(`/orders/${id}`);
-      const orders = transformApiResponse(response.data);
+      const orders = transformApiResponse(response.data);      
+      if (!orders || orders.length === 0) {
+        throw new Error(`Order with ID ${id} not found`);
+      }
+      
       return orders[0];
     } catch (error) {
       throw error;
@@ -99,15 +81,12 @@ export const orderService = {
   // créer une commande
   async createOrder(orderData: OrderCreationData): Promise<Order> {
     try {
-      console.log('Création de commande avec:', orderData);
       
       const response = await api.post<any>('/orders', orderData);
-      console.log('Réponse reçue:', response);
       
       const orders = transformApiResponse(response.data);
       return orders[0];
     } catch (error) {
-      console.error('Erreur détaillée:', error);
       throw error;
     }
   },
@@ -115,10 +94,30 @@ export const orderService = {
   // modifier une commande
   async updateOrder(id: number, orderData: OrderUpdateData): Promise<Order> {
     try {
+      console.log('Updating order with ID:', id);
+      console.log('Update data:', orderData);
+      
       const response = await api.put<any>(`/orders/${id}`, orderData);
+      console.log('Update response:', response.data);
+      
       const orders = transformApiResponse(response.data);
+      console.log('Transformed updated order:', orders[0]);
+      
+      if (!orders || orders.length === 0) {
+        throw new Error(`Failed to update order with ID ${id}`);
+      }
+      
+      // Verify we're updating the correct order
+      if (orders[0].id !== id) {
+        console.error('WARNING: Updated order ID does not match expected ID!', {
+          expected: id,
+          actual: orders[0].id
+        });
+      }
+      
       return orders[0];
     } catch (error) {
+      console.error('Error in updateOrder:', error);
       throw error;
     }
   },

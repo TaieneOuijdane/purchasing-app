@@ -11,6 +11,7 @@ import PublicRoute from './components/auth/PublicRoute';
 import RestrictedRoute from './components/auth/RestrictedRoute';
 import RestrictedPage from './pages/auth/RestrictedPage';
 import CreateOrderPage from './pages/order/CreateOrderPage';
+import UpdateOrderPage from './pages/order/UpdateOrderPage';
 import OrderManagementPage from './pages/order/OrderManagementPage';
 import ProfilPage from './pages/ProfilPage';
 
@@ -26,6 +27,8 @@ const App: React.FC = () => {
             <Route path="/" element={<ProtectedRoute element={<HomePage />} />} />
             <Route path="/orders" element={<ProtectedRoute element={<OrderManagementPage />} />} />
             <Route path="/orders/create" element={<ProtectedRoute element={<CreateOrderPage />} />} />
+            <Route path="/orders/update/:id" element={<ProtectedRoute element={<UpdateOrderPage />} />} />
+
             <Route path="/products" element={<ProtectedRoute element={<ProductManagementPage />} />} />
             <Route path="/settings" element={<ProtectedRoute element={<ProfilPage />} />} />
             

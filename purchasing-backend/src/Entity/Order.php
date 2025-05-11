@@ -44,7 +44,8 @@ use App\State\OrderCollectionProvider;
         ),
         new Put(
             security: "is_granted('ROLE_ADMIN') or (object.getCustomer() == user and object.getStatus() == 'pending')",
-            securityMessage: "Vous ne pouvez modifier que vos commandes en attente"
+            securityMessage: "Vous ne pouvez modifier que vos commandes en attente",
+            processor: OrderStateProcessor::class
         ),
         new Delete(
             security: "is_granted('ROLE_ADMIN')",
