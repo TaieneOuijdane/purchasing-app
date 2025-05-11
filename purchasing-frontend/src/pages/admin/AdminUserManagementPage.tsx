@@ -196,7 +196,7 @@ const AdminUserManagementPage: React.FC = () => {
       key: 'actions',
       header: 'Actions',
       render: (user: User) => (
-        <div className="flex justify-end space-x-2">
+        <div className="space-x-2">
           <button
             onClick={() => openEditModal(user)}
             className="text-teal-600 hover:text-teal-900"
@@ -298,7 +298,7 @@ const AdminUserManagementPage: React.FC = () => {
   const onSubmit = async (data: FormValues) => {
     try {
       setIsLoading(true);
-      
+      setErrorMessage(null);
       if (editingUser) {
         // Mise à jour d'un utilisateur existant
         if (editingUser && editingUser.id) {
@@ -336,6 +336,7 @@ const AdminUserManagementPage: React.FC = () => {
 
   const handleDelete = async (id: string) => {
     if (window.confirm('Etes-vous sur de vouloir supprimer cet utilisateur?')) {
+      setErrorMessage(null);
       try {
         setIsLoading(true);
         await userService.deleteUser(id);

@@ -452,7 +452,7 @@ const ProductManagementPage: React.FC = () => {
   const onProductSubmit = async (data: ProductFormValues) => {
     try {
       setIsLoading(true);
-      
+      setErrorMessage(null);
       const productData = {
         name: data.name,
         description: data.description,
@@ -494,7 +494,7 @@ const ProductManagementPage: React.FC = () => {
   const onCategorySubmit = async (data: CategoryFormValues) => {
     try {
       setIsLoading(true);
-      
+      setErrorMessage(null);
       const categoryData = {
         name: data.name,
         description: data.description
@@ -530,6 +530,7 @@ const ProductManagementPage: React.FC = () => {
 
   const handleDeleteProduct = async (id: string) => {
     if (window.confirm('Etes-vous sur de vouloir supprimer ce produit?')) {
+      setErrorMessage(null);
       try {
         setIsLoading(true);
         await productService.deleteProduct(id);
@@ -548,6 +549,7 @@ const ProductManagementPage: React.FC = () => {
   const fetchCategories = async () => {
     try {
       setIsLoading(true);
+      setErrorMessage(null);
       const data = await categoryService.getCategories();
       console.log('Catégories chargées:', data);
       setCategories(data);
@@ -560,6 +562,7 @@ const ProductManagementPage: React.FC = () => {
   };
 
   const handleDeleteCategory = async (id: string) => {
+    setErrorMessage(null);
     const productsWithCategory = products.filter(p => {
       if (typeof p.category === 'object' && p.category) {
         return (p.category as Category).id === parseInt(id);

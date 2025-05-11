@@ -211,6 +211,7 @@ const OrderManagementPage: React.FC = () => {
     if (window.confirm('Êtes-vous sûr de vouloir supprimer cette commande?')) {
       try {
         setIsLoading(true);
+        setErrorMessage(null);
         await orderService.deleteOrder(orderId.toString());
         setSuccessMessage("Commande supprimée avec succès");
         fetchOrders(); // Recharger la liste après suppression

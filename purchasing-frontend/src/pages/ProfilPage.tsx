@@ -4,7 +4,6 @@ import Layout from '../components/layout/Layout';
 
 const ProfilePage: React.FC = () => {
   const { user } = useAuth();
-  console.log('ProfilePage render:', user);
 
   if (!user) {
     return (

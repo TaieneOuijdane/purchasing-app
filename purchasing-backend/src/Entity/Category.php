@@ -24,9 +24,9 @@ use Symfony\Component\Validator\Constraints as Assert;
     operations: [
         new GetCollection(),
         new Get(),
-        new Post(security: "is_granted('ROLE_ADMIN')"),
-        new Put(security: "is_granted('ROLE_ADMIN')"),
-        new Delete(security: "is_granted('ROLE_ADMIN')")
+        new Post(security: "is_granted('ROLE_USER')"),
+        new Put(security: "is_granted('ROLE_USER')"),
+        new Delete(security: "is_granted('ROLE_USER')")
     ],
     normalizationContext: ['groups' => ['category:read']],
     denormalizationContext: ['groups' => ['category:write']]

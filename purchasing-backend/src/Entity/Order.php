@@ -43,7 +43,7 @@ use App\State\OrderCollectionProvider;
             processor: OrderStateProcessor::class
         ),
         new Put(
-            security: "is_granted('ROLE_ADMIN') or (object.getCustomer() == user and object.getStatus() == 'pending')",
+            security: "is_granted('ROLE_ADMIN') or (object.getCustomer() == user)",
             securityMessage: "Vous ne pouvez modifier que vos commandes en attente",
             processor: OrderStateProcessor::class
         ),
