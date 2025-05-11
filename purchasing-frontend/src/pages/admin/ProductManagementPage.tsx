@@ -55,6 +55,7 @@ const ProductManagementPage: React.FC = () => {
     control: productControl, 
     handleSubmit: handleProductSubmit, 
     reset: resetProductForm, 
+    setError: setFieldError, 
     formState: { errors: productErrors } 
   } = useForm<ProductFormValues>({
     defaultValues: {
@@ -298,7 +299,14 @@ const ProductManagementPage: React.FC = () => {
       name: 'name' as Path<ProductFormValues>,
       label: 'Nom du produit',
       type: 'text',
-      required: true
+      required: true,
+      validationRules: {
+        required: 'Le nom est requis',
+        minLength: {
+        value: 3,
+        message: 'Le nom doit contenir au moins 3 caractères'
+      }
+  }
     },
     {
       name: 'description' as Path<ProductFormValues>,
@@ -372,7 +380,14 @@ const ProductManagementPage: React.FC = () => {
       name: 'name' as Path<CategoryFormValues>,
       label: 'Nom de la catégorie',
       type: 'text',
-      required: true
+      required: true,
+      validationRules: {
+        required: 'Le nom est requis',
+        minLength: {
+          value: 2,
+          message: 'Le nom doit contenir au moins 2 caractères'
+        }
+      }
     },
     {
       name: 'description' as Path<CategoryFormValues>,
@@ -481,10 +496,16 @@ const ProductManagementPage: React.FC = () => {
       setIsModalOpen(false);
       fetchProducts(); // Recharger la liste après modification
     } catch (error: any) {
-      console.error("Erreur lors de l'opération", error);
-      setErrorMessage(error.message || (editingProduct 
-        ? "Impossible de mettre à jour le produit" 
-        : "Impossible de créer le produit"));
+      // Vérifier si le sku existe déjà
+      if (error.detail && 
+        error.detail.includes('Un produit avec ce SKU existe déjà')) {
+        setFieldError('sku', {
+          type: 'manual',
+          message: 'Un produit avec ce SKU existe déjà'
+        });
+      } else {
+        setErrorMessage(error.message || 'Une erreur est survenue.');
+      }
     } finally {
       setIsLoading(false);
     }

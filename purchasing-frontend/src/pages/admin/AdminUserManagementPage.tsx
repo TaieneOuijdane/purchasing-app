@@ -71,7 +71,8 @@ const AdminUserManagementPage: React.FC = () => {
   const { 
     control, 
     handleSubmit, 
-    reset, 
+    reset,
+    setError: setFieldError, 
     formState: { errors } 
   } = useForm<FormValues>({
     defaultValues: {
@@ -324,9 +325,17 @@ const AdminUserManagementPage: React.FC = () => {
       fetchUsers(); // Recharger la liste après modification
     } catch (error: any) {
       console.error("Erreur lors de l'opération", error);
-      setErrorMessage(error.message || (editingUser 
-        ? "Impossible de mettre à jour l'utilisateur" 
-        : "Impossible de créer l'utilisateur"));
+      
+      // Vérifier si l'email existe déjà
+      if (error.detail && 
+        error.detail.includes('Cette adresse email est déjà utilisée')) {
+        setFieldError('email', {
+          type: 'manual',
+          message: error.detail
+        });
+      } else {
+        setErrorMessage(error.message || 'Une erreur est survenue.');
+      }
     } finally {
       setIsLoading(false);
     }

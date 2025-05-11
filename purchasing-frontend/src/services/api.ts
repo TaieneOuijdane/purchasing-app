@@ -42,17 +42,11 @@ api.interceptors.response.use(
       authService.clearAuthData();
     }
     
-    const errorMessage = 
-      (response?.data && (response.data as any).message) ||
-      'Something went wrong. Please try again.';
-    
-    const apiError: ApiError = new Error(errorMessage);
-    apiError.message = errorMessage;
-    apiError.statusCode = response ? response.status : undefined;
-    
-    if (response?.data && (response.data as any).errors) {
-      apiError.validationErrors = (response.data as any).errors;
-    }
+    const apiError = {
+      message: (response?.data as any)?.message || 'Something went wrong. Please try again.',
+      statusCode: response ? response.status : undefined,
+      ...(response?.data || {})
+    };
     
     return Promise.reject(apiError);
   }

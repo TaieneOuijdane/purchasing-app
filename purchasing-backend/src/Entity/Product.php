@@ -43,7 +43,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 ])]
 #[ApiFilter(RangeFilter::class, properties: ['price', 'stock'])]
 #[ApiFilter(BooleanFilter::class, properties: ['isActive'])]
-#[UniqueEntity(fields: ['sku'], message: "Un produit avec ce SKU existe déjà")]
+#[UniqueEntity(fields: ['sku'], message: "Un produit avec ce SKU existe déjà.")]
 class Product
 {
     #[ORM\Id]
