@@ -272,7 +272,6 @@ const ProductManagementPage: React.FC = () => {
       setIsLoading(true);
       setError(null);
       const data = await productService.getProducts();
-      console.log('Produits chargés:', data);
       setProducts(data);
     } catch (err: any) {
       console.error("Error fetching products:", err);
@@ -551,7 +550,6 @@ const ProductManagementPage: React.FC = () => {
       setIsLoading(true);
       setErrorMessage(null);
       const data = await categoryService.getCategories();
-      console.log('Catégories chargées:', data);
       setCategories(data);
     } catch (err: any) {
       console.error("Error fetching categories:", err);

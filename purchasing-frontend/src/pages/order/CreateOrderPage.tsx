@@ -37,8 +37,6 @@ const CreateOrderPage: React.FC = () => {
   const fetchProducts = async () => {
     try {
       const data = await productService.getProducts();
-      console.log('data received:', data);
-      console.log('Type of data:', typeof data);
       setProducts(data);
     } catch (err: any) {
       setError("Impossible de charger les produits");

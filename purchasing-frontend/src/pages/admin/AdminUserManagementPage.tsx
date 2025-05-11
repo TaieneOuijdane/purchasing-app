@@ -228,11 +228,9 @@ const AdminUserManagementPage: React.FC = () => {
       setIsLoading(true);
       setError(null);
       const response = await userService.getUsers();
-      console.log('Réponse brute de l\'API:', response);
       
       // Transformer la réponse si nécessaire
       const transformedData = transformApiResponse(response);
-      console.log('Données transformées:', transformedData);
       
       setUsers(transformedData);
     } catch (err: any) {

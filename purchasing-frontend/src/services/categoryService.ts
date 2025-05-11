@@ -78,11 +78,8 @@ export const categoryService = {
 
   // Créer une catégorie
   async createCategory(categoryData: CategoryCreationData): Promise<Category> {
-    try {
-      console.log('Création de catégorie avec:', categoryData);
-      
+    try {      
       const response = await api.post<any>('/categories', categoryData);
-      console.log('Réponse reçue:', response);
       
       const categories = transformApiResponse(response.data);
       return categories[0];

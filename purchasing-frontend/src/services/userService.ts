@@ -62,7 +62,6 @@ export const userService = {
   async getUsers(): Promise<User[]> {
     try {
       const response = await api.get<any>('/users');
-      console.log('Réponse API users:', response.data);
       return transformApiResponse(response.data);
     } catch (error) {
       throw error;

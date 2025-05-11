@@ -167,7 +167,6 @@ const OrderManagementPage: React.FC = () => {
       setError(null);
       
       const response = await orderService.getOrders();
-      console.log('Réponse de l\'orderService:', response);
       
       setOrders(response);
     } catch (err: any) {
