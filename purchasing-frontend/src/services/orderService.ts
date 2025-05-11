@@ -94,30 +94,15 @@ export const orderService = {
   // modifier une commande
   async updateOrder(id: number, orderData: OrderUpdateData): Promise<Order> {
     try {
-      console.log('Updating order with ID:', id);
-      console.log('Update data:', orderData);
-      
       const response = await api.put<any>(`/orders/${id}`, orderData);
-      console.log('Update response:', response.data);
-      
       const orders = transformApiResponse(response.data);
-      console.log('Transformed updated order:', orders[0]);
       
       if (!orders || orders.length === 0) {
         throw new Error(`Failed to update order with ID ${id}`);
       }
       
-      // Verify we're updating the correct order
-      if (orders[0].id !== id) {
-        console.error('WARNING: Updated order ID does not match expected ID!', {
-          expected: id,
-          actual: orders[0].id
-        });
-      }
-      
       return orders[0];
     } catch (error) {
-      console.error('Error in updateOrder:', error);
       throw error;
     }
   },

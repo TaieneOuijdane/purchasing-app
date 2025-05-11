@@ -25,7 +25,6 @@ export const authService = {
   // Logout user
   async logout(): Promise<void> {
     try {    
-      // Suppression du token
       this.clearAuthData();
     } catch (error) {
       this.clearAuthData();
